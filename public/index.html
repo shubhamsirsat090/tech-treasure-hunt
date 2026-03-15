@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Tech Treasure Hunt</title>
+    <link href="https://fonts.googleapis.com/css2?family=Boogaloo&family=Nunito:wght@400;600;700;800&display=swap"
+        rel="stylesheet" />
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --yellow: #FFD93D;
+            --orange: #FF6B35;
+            --pink: #FF4E8C;
+            --blue: #4ECDC4;
+            --green: #6BCB77;
+            --purple: #9B5DE5;
+            --bg: #1a1a2e;
+            --card: #16213e;
+            --card2: #0f3460;
+            --text: #ffffff;
+            --muted: rgba(255, 255, 255, 0.55);
+            --border: rgba(255, 255, 255, 0.1);
+        }
+
+        html,
+        body {
+            height: 100%;
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Nunito', sans-serif;
+            overflow-x: hidden;
+        }
+
+        .bg-blobs {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.15;
+            animation: blobMove 12s ease-in-out infinite alternate;
+        }
+
+        .blob1 {
+            width: 350px;
+            height: 350px;
+            background: var(--pink);
+            top: -80px;
+            left: -80px;
+            animation-delay: 0s;
+        }
+
+        .blob2 {
+            width: 300px;
+            height: 300px;
+            background: var(--blue);
+            bottom: 0;
+            right: -60px;
+            animation-delay: 3s;
+        }
+
+        .blob3 {
+            width: 250px;
+            height: 250px;
+            background: var(--yellow);
+            top: 40%;
+            left: 30%;
+            animation-delay: 6s;
+        }
+
+        @keyframes blobMove {
+            0% {
+                transform: translate(0, 0) scale(1)
+            }
+
+            100% {
+                transform: translate(30px, 40px) scale(1.1)
+            }
+        }
+
+        .screen {
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 28px 20px;
+            animation: fadeUp 0.4s ease;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0)
+            }
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 28px 24px;
+            width: 100%;
+            max-width: 380px;
+        }
+
+        .field-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 8px;
+        }
+
+        .field-group {
+            margin-bottom: 18px;
+        }
+
+        input[type="text"],
+        input[type="number"] {
+            width: 100%;
+            background: var(--card2);
+            border: 2px solid var(--border);
+            color: var(--text);
+            padding: 14px 16px;
+            border-radius: 14px;
+            font-size: 16px;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 700;
+            outline: none;
+            transition: border-color 0.2s;
+            -webkit-appearance: none;
+        }
+
+        input:focus {
+            border-color: var(--yellow);
+        }
+
+        input::placeholder {
+            color: var(--muted);
+            font-weight: 600;
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: var(--yellow);
+            color: #1a1a2e;
+            border: none;
+            padding: 16px;
+            border-radius: 16px;
+            font-size: 17px;
+            font-weight: 800;
+            font-family: 'Nunito', sans-serif;
+            cursor: pointer;
+            transition: transform 0.15s, box-shadow 0.15s, opacity 0.2s;
+            box-shadow: 0 6px 20px rgba(255, 217, 61, 0.35);
+            margin-top: 4px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .submit-btn:active {
+            transform: scale(0.97);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .error-msg {
+            background: rgba(255, 78, 140, 0.12);
+            border: 1px solid rgba(255, 78, 140, 0.3);
+            color: var(--pink);
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 700;
+            margin-top: 14px;
+            display: none;
+            text-align: center;
+        }
+
+        .error-msg.show {
+            display: block;
+        }
+
+        .spinner {
+            width: 22px;
+            height: 22px;
+            border: 3px solid rgba(26, 26, 46, 0.3);
+            border-top-color: #1a1a2e;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg)
+            }
+        }
+
+        /* SCREEN 1 - START (WhatsApp QR) */
+        .welcome-logo {
+            font-family: 'Boogaloo', cursive;
+            font-size: 52px;
+            line-height: 1.1;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        .welcome-logo .t1 {
+            color: var(--yellow);
+            display: block;
+        }
+
+        .welcome-logo .t2 {
+            color: var(--orange);
+            display: block;
+        }
+
+        .welcome-logo .t3 {
+            color: var(--pink);
+            display: block;
+            font-size: 34px;
+        }
+
+        .welcome-sub {
+            color: var(--muted);
+            font-size: 14px;
+            text-align: center;
+            margin-bottom: 32px;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        /* SCREEN 2 - LOCATION LOGIN */
+        .location-banner {
+            background: linear-gradient(135deg, var(--orange), var(--pink));
+            border-radius: 18px;
+            padding: 16px 22px;
+            width: 100%;
+            max-width: 380px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+
+        .loc-icon {
+            font-size: 32px;
+        }
+
+        .loc-label {
+            font-size: 11px;
+            font-weight: 800;
+            opacity: 0.8;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .loc-name {
+            font-family: 'Boogaloo', cursive;
+            font-size: 28px;
+            color: white;
+            line-height: 1.1;
+        }
+
+        .screen-title {
+            font-family: 'Boogaloo', cursive;
+            font-size: 26px;
+            color: var(--yellow);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        /* SCREEN 3 - STARTING HINT */
+        .hint-emoji {
+            font-size: 70px;
+            text-align: center;
+            margin-bottom: 16px;
+            animation: bounceIn 0.6s ease;
+        }
+
+        .hint-title {
+            font-family: 'Boogaloo', cursive;
+            font-size: 36px;
+            color: var(--yellow);
+            text-align: center;
+            margin-bottom: 6px;
+        }
+
+        .hint-sub {
+            font-size: 14px;
+            color: var(--muted);
+            text-align: center;
+            margin-bottom: 24px;
+            font-weight: 600;
+        }
+
+        .starting-hint-card {
+            background: var(--card);
+            border: 2px solid rgba(78, 205, 196, 0.3);
+            border-radius: 24px;
+            padding: 26px 24px;
+            width: 100%;
+            max-width: 380px;
+            margin-bottom: 20px;
+        }
+
+        .hint-label {
+            font-size: 11px;
+            font-weight: 800;
+            color: var(--blue);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 14px;
+        }
+
+        .hint-text {
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--text);
+            line-height: 1.7;
+        }
+
+        .first-loc-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 107, 53, 0.15);
+            border: 1px solid rgba(255, 107, 53, 0.4);
+            color: var(--orange);
+            padding: 8px 18px;
+            border-radius: 99px;
+            font-size: 14px;
+            font-weight: 800;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        /* SCREEN 4 - PUZZLE */
+        .team-pill {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 99px;
+            padding: 8px 18px;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--muted);
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .team-pill .dot {
+            width: 8px;
+            height: 8px;
+            background: var(--green);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1
+            }
+
+            50% {
+                opacity: 0.3
+            }
+        }
+
+        .puzzle-card {
+            background: var(--card);
+            border: 2px solid rgba(255, 217, 61, 0.2);
+            border-radius: 24px;
+            padding: 28px 24px;
+            width: 100%;
+            max-width: 380px;
+            margin-bottom: 18px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .puzzle-card::before {
+            content: '?';
+            position: absolute;
+            font-family: 'Boogaloo', cursive;
+            font-size: 200px;
+            color: rgba(255, 217, 61, 0.04);
+            top: -20px;
+            right: -10px;
+            line-height: 1;
+            pointer-events: none;
+        }
+
+        .puzzle-label {
+            font-size: 11px;
+            font-weight: 800;
+            color: var(--yellow);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 14px;
+        }
+
+        .puzzle-question {
+            font-size: 19px;
+            font-weight: 700;
+            line-height: 1.6;
+            color: var(--text);
+        }
+
+        .story-box {
+            background: rgba(155, 93, 229, 0.1);
+            border: 1px solid rgba(155, 93, 229, 0.3);
+            border-radius: 16px;
+            padding: 16px 18px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.8);
+            line-height: 1.7;
+            font-style: italic;
+            width: 100%;
+            max-width: 380px;
+        }
+
+        .story-label {
+            font-size: 11px;
+            font-weight: 800;
+            color: var(--purple);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 8px;
+            font-style: normal;
+        }
+
+        .answer-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 24px;
+            width: 100%;
+            max-width: 380px;
+        }
+
+        .wrong-shake {
+            animation: shake 0.4s ease;
+        }
+
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0)
+            }
+
+            20% {
+                transform: translateX(-8px)
+            }
+
+            40% {
+                transform: translateX(8px)
+            }
+
+            60% {
+                transform: translateX(-5px)
+            }
+
+            80% {
+                transform: translateX(5px)
+            }
+        }
+
+        /* SCREEN 5 - HINT AFTER CORRECT */
+        .correct-emoji {
+            font-size: 80px;
+            text-align: center;
+            margin-bottom: 14px;
+            animation: bounceIn 0.6s ease;
+        }
+
+        @keyframes bounceIn {
+            0% {
+                transform: scale(0.3);
+                opacity: 0
+            }
+
+            50% {
+                transform: scale(1.15)
+            }
+
+            70% {
+                transform: scale(0.95)
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1
+            }
+        }
+
+        .correct-title {
+            font-family: 'Boogaloo', cursive;
+            font-size: 40px;
+            color: var(--yellow);
+            text-align: center;
+            margin-bottom: 6px;
+        }
+
+        .correct-sub {
+            font-size: 14px;
+            color: var(--muted);
+            text-align: center;
+            margin-bottom: 24px;
+            font-weight: 600;
+        }
+
+        .next-loc-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 107, 53, 0.15);
+            border: 1px solid rgba(255, 107, 53, 0.4);
+            color: var(--orange);
+            padding: 8px 18px;
+            border-radius: 99px;
+            font-size: 14px;
+            font-weight: 800;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        .next-hint-card {
+            background: var(--card);
+            border: 2px solid rgba(78, 205, 196, 0.3);
+            border-radius: 24px;
+            padding: 26px 24px;
+            width: 100%;
+            max-width: 380px;
+            margin-bottom: 20px;
+        }
+
+        .scan-note {
+            font-size: 13px;
+            color: var(--muted);
+            text-align: center;
+            font-weight: 600;
+        }
+
+        /* SCREEN 6 - FINISHED */
+        .trophy-big {
+            font-size: 100px;
+            text-align: center;
+            animation: float 3s ease-in-out infinite;
+            margin-bottom: 16px;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0)
+            }
+
+            50% {
+                transform: translateY(-12px)
+            }
+        }
+
+        .finished-title {
+            font-family: 'Boogaloo', cursive;
+            font-size: 46px;
+            color: var(--yellow);
+            text-align: center;
+            margin-bottom: 8px;
+        }
+
+        .finished-sub {
+            font-size: 15px;
+            color: var(--muted);
+            text-align: center;
+            margin-bottom: 32px;
+            font-weight: 600;
+            line-height: 1.6;
+            max-width: 300px;
+        }
+
+        .play-again-btn {
+            background: var(--green);
+            color: #1a1a2e;
+            border: none;
+            padding: 16px 40px;
+            border-radius: 16px;
+            font-size: 17px;
+            font-weight: 800;
+            font-family: 'Nunito', sans-serif;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(107, 203, 119, 0.35);
+            transition: transform 0.15s;
+        }
+
+        .play-again-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* CONFETTI */
+        .confetti-wrap {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 999;
+            overflow: hidden;
+        }
+
+        .confetti-piece {
+            position: absolute;
+            top: -20px;
+            border-radius: 2px;
+            animation: confettiFall linear forwards;
+        }
+
+        @keyframes confettiFall {
+            to {
+                transform: translateY(110vh) rotate(720deg);
+                opacity: 0
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="bg-blobs">
+        <div class="blob blob1"></div>
+        <div class="blob blob2"></div>
+        <div class="blob blob3"></div>
+    </div>
+    <div class="confetti-wrap" id="confetti-wrap"></div>
+
+    <!-- SCREEN 1: START (WhatsApp QR opens this) -->
+    <div class="screen" id="screen-start">
+        <div class="welcome-logo">
+            <span class="t1">TECH</span>
+            <span class="t2">TREASURE</span>
+            <span class="t3">HUNT 🗺️</span>
+        </div>
+        <div class="welcome-sub">The Hunt Begins Now!</div>
+        <div class="card">
+            <div class="field-group">
+                <div class="field-label">Team Number</div>
+                <input type="number" id="start-team-number" placeholder="e.g. 5" min="1" max="20" />
+            </div>
+            <div class="field-group">
+                <div class="field-label">Team Code</div>
+                <input type="text" id="start-team-code" placeholder="e.g. TT265" />
+            </div>
+            <button class="submit-btn" id="start-btn" onclick="handleStart()">Get My First Location! 🚀</button>
+            <div class="error-msg" id="start-error">Invalid team number or code!</div>
+        </div>
+    </div>
+
+    <!-- SCREEN 2: LOCATION LOGIN (location QR opens this) -->
+    <div class="screen" id="screen-login">
+        <div class="location-banner">
+            <div class="loc-icon">📍</div>
+            <div>
+                <div class="loc-label">You scanned location</div>
+                <div class="loc-name" id="banner-location">L1</div>
+            </div>
+        </div>
+        <div class="screen-title">Enter Your Team Details</div>
+        <div class="card">
+            <div class="field-group">
+                <div class="field-label">Team Number</div>
+                <input type="number" id="login-team-number" placeholder="e.g. 5" min="1" max="20" />
+            </div>
+            <div class="field-group">
+                <div class="field-label">Team Code</div>
+                <input type="text" id="login-team-code" placeholder="e.g. TT265" />
+            </div>
+            <button class="submit-btn" id="login-btn" onclick="handleLogin()">Show My Puzzle 🧩</button>
+            <div class="error-msg" id="login-error">Invalid team number or code!</div>
+        </div>
+    </div>
+
+    <!-- SCREEN 3: STARTING HINT (shown after WhatsApp QR login) -->
+    <div class="screen" id="screen-starting-hint">
+        <div class="hint-emoji">🗺️</div>
+        <div class="hint-title">Your Hunt Begins!</div>
+        <div class="hint-sub" id="starting-team-label">Team 1 — here is your first location hint</div>
+        <div class="first-loc-tag">🏁 Head to: <span id="first-loc-display">L1</span></div>
+        <div class="starting-hint-card">
+            <div class="hint-label">🔍 Your Clue</div>
+            <div class="hint-text" id="starting-hint-text">Loading...</div>
+        </div>
+        <p style="font-size:13px;color:var(--muted);text-align:center;font-weight:600;max-width:300px">
+            Go to this location and scan the QR code there to get your puzzle!
+        </p>
+    </div>
+
+    <!-- SCREEN 4: PUZZLE -->
+    <div class="screen" id="screen-puzzle">
+        <div class="team-pill">
+            <div class="dot"></div>
+            <span id="puzzle-team-name">Team 1</span>
+            &nbsp;·&nbsp;
+            <span id="puzzle-loc-pill">L1</span>
+        </div>
+        <div class="story-box" id="story-box" style="display:none">
+            <div class="story-label">📖 Story</div>
+            <div id="story-text"></div>
+        </div>
+        <div class="puzzle-card">
+            <div class="puzzle-label">🧩 Solve this puzzle</div>
+            <div class="puzzle-question" id="puzzle-question">Loading...</div>
+        </div>
+        <div class="answer-card" id="answer-card">
+            <div class="field-group" style="margin-bottom:14px">
+                <div class="field-label">Your Answer</div>
+                <input type="text" id="input-answer" placeholder="Type your answer here..." />
+            </div>
+            <button class="submit-btn" id="answer-btn" onclick="handleAnswer()">Submit Answer ✓</button>
+            <div class="error-msg" id="answer-error">Wrong answer! Think harder 🤔</div>
+        </div>
+    </div>
+
+    <!-- SCREEN 5: CORRECT + NEXT HINT -->
+    <div class="screen" id="screen-hint">
+        <div class="correct-emoji">🎉</div>
+        <div class="correct-title">Correct!</div>
+        <div class="correct-sub">Here is your hint for the next location</div>
+        <div class="next-loc-tag">📍 Next: <span id="next-loc-name">L2</span></div>
+        <div class="next-hint-card">
+            <div class="hint-label">🗺️ Hint</div>
+            <div class="hint-text" id="next-hint-text">Loading...</div>
+        </div>
+        <p class="scan-note">Scan the QR code at the next location to continue!</p>
+    </div>
+
+    <!-- SCREEN 6: FINISHED -->
+    <div class="screen" id="screen-finished">
+        <div class="trophy-big">🏆</div>
+        <div class="finished-title">You Won!</div>
+        <div class="finished-sub" id="finish-msg">Amazing! Your team completed the Tech Treasure Hunt!</div>
+        <button class="play-again-btn" onclick="playAgain()">Play Again 🔄</button>
+    </div>
+
+    <script>
+        const API = 'http://localhost:5000/api';
+
+        // ── EDIT THESE HINTS — shown after correct answer at each location ──
+        const nextLocationHints = {
+            L1: "Great job! Your next clue is near where knowledge flows — head to the library or study area!",
+            L2: "Nice! Next stop is where code comes alive — find the computer lab or tech room!",
+            L3: "Brilliant! Head to the heart of campus where everyone gathers between classes!",
+            L4: "Well done! Your next location is where experiments happen — the science lab area!",
+            L5: "Amazing! Go where the food is — the canteen or food court is calling you!",
+            L6: "So close! Head to the tallest point on campus for your next puzzle!",
+            L7: "Last one! Head back to where it all began — the main entrance or starting point!",
+        };
+
+        let state = {
+            teamNumber: null,
+            teamCode: null,
+            currentLocation: null,
+            // Store hint screen data so refresh shows same hint
+            lastHint: null,
+            lastNextLoc: null,
+            lastScreen: null,
+        };
+
+        // ── ON PAGE LOAD ──
+        window.onload = function () {
+            const params = new URLSearchParams(window.location.search);
+            const location = params.get('location');
+            const isStart = params.get('start');
+
+            // Always load saved state first
+            const saved = sessionStorage.getItem('huntState');
+            if (saved) {
+                state = JSON.parse(saved);
+            }
+
+            if (isStart) {
+                // WhatsApp QR — always show start screen fresh
+                showScreen('screen-start');
+
+            } else if (location) {
+                // Location QR scanned — but first check if we already answered this location
+                const scannedLoc = location.toUpperCase();
+
+                if (
+                    state.lastScreen === 'screen-hint' &&
+                    state.lastHint &&
+                    state.currentLocation === scannedLoc
+                ) {
+                    // Already answered this location — show hint again instead of puzzle
+                    document.getElementById('next-loc-name').textContent = state.lastNextLoc || '';
+                    document.getElementById('next-hint-text').textContent = state.lastHint;
+                    showScreen('screen-hint');
+
+                } else {
+                    // New location scan — show login
+                    state.currentLocation = scannedLoc;
+                    saveState();
+                    document.getElementById('banner-location').textContent = state.currentLocation;
+                    showScreen('screen-login');
+                }
+
+            } else if (state.lastScreen) {
+                // Plain refresh with no URL params — restore last screen
+                restoreScreen();
+
+            } else {
+                showScreen('screen-start');
+            }
+        };
+
+        function saveState() {
+            sessionStorage.setItem('huntState', JSON.stringify(state));
+        }
+
+        function restoreScreen() {
+            if (state.lastScreen === 'screen-hint' && state.lastHint) {
+                document.getElementById('next-loc-name').textContent = state.lastNextLoc || '';
+                document.getElementById('next-hint-text').textContent = state.lastHint;
+                showScreen('screen-hint');
+
+            } else if (state.lastScreen === 'screen-starting-hint' && state.lastHint) {
+                document.getElementById('starting-team-label').textContent = 'Team ' + state.teamNumber + ' — here is your first location hint';
+                document.getElementById('first-loc-display').textContent = state.lastNextLoc || '';
+                document.getElementById('starting-hint-text').textContent = state.lastHint || '';
+                showScreen('screen-starting-hint');
+
+            } else if (state.lastScreen === 'screen-finished') {
+                document.getElementById('finish-msg').textContent = 'Amazing! Team ' + state.teamNumber + ' completed the Tech Treasure Hunt! 🎊';
+                showScreen('screen-finished');
+
+            } else {
+                showScreen('screen-start');
+            }
+        }
+
+        function showScreen(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            window.scrollTo(0, 0);
+        }
+
+        // ── HANDLE START (WhatsApp QR) ──
+        async function handleStart() {
+            const teamNumber = document.getElementById('start-team-number').value.trim();
+            const teamCode = document.getElementById('start-team-code').value.trim().toUpperCase();
+
+            if (!teamNumber || !teamCode) { showError('start-error', 'Please fill in both fields!'); return; }
+
+            const btn = document.getElementById('start-btn');
+            btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>';
+            hideError('start-error');
+
+            try {
+                const res = await fetch(`${API}/game/start`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ teamNumber: Number(teamNumber), teamCode })
+                });
+                const data = await res.json();
+
+                if (!data.success) {
+                    showError('start-error', data.error || 'Invalid credentials!');
+                    btn.disabled = false; btn.textContent = 'Get My First Location! 🚀';
+                    return;
+                }
+
+                state.teamNumber = teamNumber;
+                state.teamCode = teamCode;
+                state.lastNextLoc = data.firstLocation;
+                state.lastHint = data.hint;
+                state.lastScreen = 'screen-starting-hint';
+                saveState();
+
+                document.getElementById('starting-team-label').textContent = 'Team ' + teamNumber + ' — here is your first location hint';
+                document.getElementById('first-loc-display').textContent = data.firstLocation;
+                document.getElementById('starting-hint-text').textContent = data.hint;
+
+                showScreen('screen-starting-hint');
+
+            } catch (e) { showError('start-error', 'Cannot connect to server!'); }
+
+            btn.disabled = false; btn.textContent = 'Get My First Location! 🚀';
+        }
+
+        // ── HANDLE LOGIN (location QR) ──
+        async function handleLogin() {
+            const teamNumber = document.getElementById('login-team-number').value.trim();
+            const teamCode = document.getElementById('login-team-code').value.trim().toUpperCase();
+
+            if (!teamNumber || !teamCode) { showError('login-error', 'Please fill in both fields!'); return; }
+
+            const btn = document.getElementById('login-btn');
+            btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>';
+            hideError('login-error');
+
+            try {
+                const res = await fetch(`${API}/game/verify`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        teamNumber: Number(teamNumber),
+                        teamCode,
+                        location: state.currentLocation
+                    })
+                });
+                const data = await res.json();
+
+                if (!data.success) {
+                    showError('login-error', data.error || 'Invalid credentials!');
+                    btn.disabled = false; btn.textContent = 'Show My Puzzle 🧩';
+                    return;
+                }
+
+                state.teamNumber = teamNumber;
+                state.teamCode = teamCode;
+                state.lastScreen = 'screen-puzzle';
+                saveState();
+
+                document.getElementById('puzzle-team-name').textContent = 'Team ' + teamNumber;
+                document.getElementById('puzzle-loc-pill').textContent = state.currentLocation;
+                document.getElementById('puzzle-question').textContent = data.question;
+                document.getElementById('input-answer').value = '';
+                hideError('answer-error');
+
+                if (data.story) {
+                    document.getElementById('story-text').textContent = data.story;
+                    document.getElementById('story-box').style.display = 'block';
+                } else {
+                    document.getElementById('story-box').style.display = 'none';
+                }
+
+                showScreen('screen-puzzle');
+
+            } catch (e) { showError('login-error', 'Cannot connect to server!'); }
+
+            btn.disabled = false; btn.textContent = 'Show My Puzzle 🧩';
+        }
+
+        // ── SUBMIT ANSWER ──
+        async function handleAnswer() {
+            const answer = document.getElementById('input-answer').value.trim();
+            if (!answer) { showError('answer-error', 'Please type your answer!'); return; }
+
+            const btn = document.getElementById('answer-btn');
+            btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>';
+            hideError('answer-error');
+
+            try {
+                const res = await fetch(`${API}/game/answer`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        teamNumber: Number(state.teamNumber),
+                        teamCode: state.teamCode,
+                        location: state.currentLocation,
+                        answer
+                    })
+                });
+                const data = await res.json();
+
+                if (data.error) {
+                    shakeCard(); showError('answer-error', data.error);
+                } else if (!data.success) {
+                    shakeCard(); showError('answer-error', 'Wrong answer! Think harder 🤔');
+                } else if (data.finished) {
+                    // Hunt complete!
+                    state.lastScreen = 'screen-finished';
+                    saveState();
+                    launchConfetti();
+                    document.getElementById('finish-msg').textContent =
+                        'Amazing! Team ' + state.teamNumber + ' completed the Tech Treasure Hunt! 🎊';
+                    setTimeout(() => showScreen('screen-finished'), 400);
+                } else {
+                    // Correct — show next hint
+                    const nextLoc = data.nextLocation;
+                    const hintText = nextLocationHints[nextLoc] || 'Scan the QR code at ' + nextLoc + ' to continue!';
+
+                    state.lastNextLoc = nextLoc;
+                    state.lastHint = hintText;
+                    state.lastScreen = 'screen-hint';
+                    saveState();
+
+                    document.getElementById('next-loc-name').textContent = nextLoc;
+                    document.getElementById('next-hint-text').textContent = hintText;
+
+                    launchConfetti();
+                    setTimeout(() => showScreen('screen-hint'), 300);
+                }
+
+            } catch (e) { showError('answer-error', 'Cannot connect to server!'); }
+
+            btn.disabled = false; btn.textContent = 'Submit Answer ✓';
+        }
+
+        // ── PLAY AGAIN ──
+        function playAgain() {
+            state = { teamNumber: null, teamCode: null, currentLocation: null, lastHint: null, lastNextLoc: null, lastScreen: null };
+            sessionStorage.removeItem('huntState');
+            document.getElementById('start-team-number').value = '';
+            document.getElementById('start-team-code').value = '';
+            showScreen('screen-start');
+        }
+
+        // ── HELPERS ──
+        function showError(id, msg) { const el = document.getElementById(id); el.textContent = msg; el.classList.add('show'); }
+        function hideError(id) { document.getElementById(id).classList.remove('show'); }
+        function shakeCard() { const c = document.getElementById('answer-card'); c.classList.remove('wrong-shake'); void c.offsetWidth; c.classList.add('wrong-shake'); }
+
+        function launchConfetti() {
+            const wrap = document.getElementById('confetti-wrap');
+            const colors = ['#FFD93D', '#FF6B35', '#FF4E8C', '#4ECDC4', '#6BCB77', '#9B5DE5'];
+            wrap.innerHTML = '';
+            for (let i = 0; i < 70; i++) {
+                const el = document.createElement('div');
+                el.className = 'confetti-piece';
+                el.style.cssText = `left:${Math.random() * 100}%;background:${colors[Math.floor(Math.random() * colors.length)]};width:${6 + Math.random() * 8}px;height:${6 + Math.random() * 8}px;animation-duration:${1.5 + Math.random() * 2}s;animation-delay:${Math.random() * 0.5}s;border-radius:${Math.random() > 0.5 ? '50%' : '2px'};`;
+                wrap.appendChild(el);
+            }
+            setTimeout(() => wrap.innerHTML = '', 3500);
+        }
+
+        document.addEventListener('keydown', e => {
+            if (e.key !== 'Enter') return;
+            const active = document.querySelector('.screen.active');
+            if (!active) return;
+            if (active.id === 'screen-start') handleStart();
+            if (active.id === 'screen-login') handleLogin();
+            if (active.id === 'screen-puzzle') handleAnswer();
+        });
+    </script>
+</body>
+
+</html>
