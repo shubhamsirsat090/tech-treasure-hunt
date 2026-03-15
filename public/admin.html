@@ -1,312 +1,798 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Tech Treasure — Admin</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@400;500;600&display=swap');
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
-      --bg: #0f0f11; --surface: #18181c; --surface2: #222228;
-      --border: rgba(255,255,255,0.08); --text: #f0efe8; --muted: #888882;
-      --accent: #f5c518; --green: #2ecc71; --blue: #4a9eff; --red: #e74c3c;
-    }
-    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tech Treasure — Admin</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@400;500;600&display=swap');
 
-    /* LOGIN */
-    .login-screen { min-height:100vh; display:flex; align-items:center; justify-content:center; padding:20px; }
-    .login-box { background:var(--surface); border:1px solid var(--border); border-radius:20px; padding:36px 32px; width:100%; max-width:360px; text-align:center; }
-    .login-logo { font-family:'Space Mono',monospace; font-size:18px; font-weight:700; color:var(--accent); margin-bottom:6px; }
-    .login-sub  { font-size:13px; color:var(--muted); margin-bottom:28px; }
-    .login-box input { width:100%; background:var(--surface2); border:1px solid var(--border); color:var(--text); padding:12px 16px; border-radius:10px; font-size:15px; font-family:'DM Sans',sans-serif; outline:none; margin-bottom:14px; }
-    .login-box input:focus { border-color:var(--accent); }
-    .login-btn { width:100%; background:var(--accent); color:#0f0f11; border:none; padding:13px; border-radius:10px; font-size:15px; font-weight:700; font-family:'DM Sans',sans-serif; cursor:pointer; transition:opacity 0.2s; }
-    .login-btn:hover { opacity:0.9; }
-    .login-error { color:var(--red); font-size:13px; margin-top:10px; display:none; }
-    .login-error.show { display:block; }
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-    /* DASHBOARD */
-    .dashboard { display:none; }
-    header { display:flex; align-items:center; justify-content:space-between; padding:18px 32px; border-bottom:1px solid var(--border); background:var(--surface); position:sticky; top:0; z-index:100; flex-wrap:wrap; gap:10px; }
-    .logo { font-family:'Space Mono',monospace; font-size:15px; font-weight:700; color:var(--accent); }
-    .logo span { color:var(--text); }
-    .header-right { display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
-    .live-badge { display:flex; align-items:center; gap:6px; font-size:12px; color:var(--green); font-family:'Space Mono',monospace; }
-    .live-dot { width:7px; height:7px; background:var(--green); border-radius:50%; animation:pulse 1.8s ease-in-out infinite; }
-    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(0.8)} }
-    .last-updated { font-size:11px; font-family:'Space Mono',monospace; color:var(--muted); transition:color 0.3s; }
-    .last-updated.flash { color:var(--green); }
-    .refresh-btn { background:var(--surface2); border:1px solid var(--border); color:var(--muted); padding:7px 14px; border-radius:8px; font-size:13px; cursor:pointer; font-family:'DM Sans',sans-serif; transition:all 0.2s; }
-    .refresh-btn:hover { color:var(--text); }
-    .reset-all-btn { background:rgba(231,76,60,0.1); border:1px solid var(--red); color:var(--red); padding:7px 14px; border-radius:8px; font-size:13px; cursor:pointer; font-family:'DM Sans',sans-serif; transition:all 0.2s; font-weight:600; }
-    .reset-all-btn:hover { background:rgba(231,76,60,0.25); }
-    .logout-btn { background:transparent; border:1px solid var(--border); color:var(--muted); padding:7px 14px; border-radius:8px; font-size:13px; cursor:pointer; font-family:'DM Sans',sans-serif; }
-    .logout-btn:hover { color:var(--text); }
+        :root {
+            --bg: #0f0f11;
+            --surface: #18181c;
+            --surface2: #222228;
+            --border: rgba(255, 255, 255, 0.08);
+            --text: #f0efe8;
+            --muted: #888882;
+            --accent: #f5c518;
+            --green: #2ecc71;
+            --blue: #4a9eff;
+            --red: #e74c3c;
+        }
 
-    main { padding:28px 32px; max-width:1200px; margin:0 auto; }
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
 
-    /* STATS */
-    .stats-row { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:28px; }
-    .stat-card { background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:18px 20px; }
-    .stat-label { font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:0.08em; font-family:'Space Mono',monospace; margin-bottom:8px; }
-    .stat-value { font-size:28px; font-weight:600; font-family:'Space Mono',monospace; }
-    .stat-value.accent { color:var(--accent); }
-    .stat-value.green  { color:var(--green); }
-    .stat-value.blue   { color:var(--blue); }
+        /* LOGIN */
+        .login-screen {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
 
-    .section-title { font-size:13px; font-family:'Space Mono',monospace; color:var(--muted); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:14px; }
+        .login-box {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 36px 32px;
+            width: 100%;
+            max-width: 360px;
+            text-align: center;
+        }
 
-    /* TWO COL */
-    .two-col { display:grid; grid-template-columns:1fr 1.6fr; gap:20px; margin-bottom:28px; }
+        .login-logo {
+            font-family: 'Space Mono', monospace;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 6px;
+        }
 
-    /* LEADERBOARD */
-    .leaderboard-card { background:var(--surface); border:1px solid var(--border); border-radius:14px; overflow:hidden; }
-    .leaderboard-empty { padding:40px 20px; text-align:center; color:var(--muted); font-size:14px; }
-    .leaderboard-item { display:flex; align-items:center; gap:14px; padding:14px 20px; border-bottom:1px solid var(--border); transition:background 0.15s; }
-    .leaderboard-item:last-child { border-bottom:none; }
-    .leaderboard-item:hover { background:var(--surface2); }
-    .rank-badge { width:30px; height:30px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-family:'Space Mono',monospace; font-size:13px; font-weight:700; flex-shrink:0; }
-    .rank-1 { background:#3d3200; color:var(--accent); }
-    .rank-2 { background:#1e2830; color:#a0c4e8; }
-    .rank-3 { background:#2a1f10; color:#c8956a; }
-    .rank-n { background:var(--surface2); color:var(--muted); }
-    .lb-name { flex:1; font-size:14px; font-weight:500; }
-    .lb-time { font-family:'Space Mono',monospace; font-size:12px; color:var(--muted); }
+        .login-sub {
+            font-size: 13px;
+            color: var(--muted);
+            margin-bottom: 28px;
+        }
 
-    /* TEAMS TABLE */
-    .teams-card { background:var(--surface); border:1px solid var(--border); border-radius:14px; overflow:hidden; }
-    .teams-table-header { padding:16px 20px; border-bottom:1px solid var(--border); font-size:14px; font-weight:500; display:flex; align-items:center; justify-content:space-between; }
-    .search-input { background:var(--surface2); border:1px solid var(--border); color:var(--text); padding:6px 12px; border-radius:8px; font-size:13px; font-family:'DM Sans',sans-serif; width:160px; outline:none; }
-    .search-input::placeholder { color:var(--muted); }
-    table { width:100%; border-collapse:collapse; }
-    thead th { padding:10px 16px; text-align:left; font-size:11px; color:var(--muted); font-family:'Space Mono',monospace; text-transform:uppercase; letter-spacing:0.08em; border-bottom:1px solid var(--border); }
-    tbody tr { border-bottom:1px solid var(--border); transition:background 0.15s; }
-    tbody tr:last-child { border-bottom:none; }
-    tbody tr:hover { background:var(--surface2); }
-    td { padding:12px 16px; font-size:13px; vertical-align:middle; }
+        .login-box input {
+            width: 100%;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-family: 'DM Sans', sans-serif;
+            outline: none;
+            margin-bottom: 14px;
+        }
 
-    /* PROGRESS */
-    .progress-wrap { display:flex; align-items:center; gap:10px; }
-    .progress-bar { flex:1; height:5px; background:var(--surface2); border-radius:99px; overflow:hidden; min-width:80px; }
-    .progress-fill { height:100%; border-radius:99px; transition:width 0.5s ease; background:var(--blue); }
-    .progress-fill.done { background:var(--green); }
-    .progress-text { font-family:'Space Mono',monospace; font-size:11px; color:var(--muted); min-width:32px; text-align:right; }
+        .login-box input:focus {
+            border-color: var(--accent);
+        }
 
-    /* BADGES */
-    .badge { display:inline-flex; align-items:center; gap:5px; padding:3px 9px; border-radius:6px; font-size:11px; font-family:'Space Mono',monospace; font-weight:700; }
-    .badge-done    { background:rgba(46,204,113,0.12); color:var(--green); }
-    .badge-active  { background:rgba(74,158,255,0.12); color:var(--blue); }
-    .badge-waiting { background:rgba(136,136,130,0.1);  color:var(--muted); }
+        .login-btn {
+            width: 100%;
+            background: var(--accent);
+            color: #0f0f11;
+            border: none;
+            padding: 13px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 700;
+            font-family: 'DM Sans', sans-serif;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
 
-    /* RESET BTN */
-    .reset-btn { background:transparent; border:1px solid var(--border); color:var(--muted); padding:5px 10px; border-radius:6px; font-size:11px; cursor:pointer; font-family:'Space Mono',monospace; transition:all 0.2s; }
-    .reset-btn:hover { border-color:var(--red); color:var(--red); background:rgba(231,76,60,0.08); }
+        .login-btn:hover {
+            opacity: 0.9;
+        }
 
-    /* TOAST */
-    .toast { position:fixed; bottom:28px; right:28px; background:var(--surface2); border:1px solid var(--border); color:var(--text); padding:12px 20px; border-radius:10px; font-size:13px; z-index:999; opacity:0; transform:translateY(10px); transition:all 0.3s; pointer-events:none; }
-    .toast.show { opacity:1; transform:translateY(0); }
-    .toast.success { border-left:3px solid var(--green); }
-    .toast.error   { border-left:3px solid var(--red); }
+        .login-error {
+            color: var(--red);
+            font-size: 13px;
+            margin-top: 10px;
+            display: none;
+        }
 
-    @media(max-width:800px) {
-      .stats-row { grid-template-columns:repeat(2,1fr); }
-      .two-col   { grid-template-columns:1fr; }
-      main { padding:16px; }
-      header { padding:14px 16px; }
-    }
-  </style>
+        .login-error.show {
+            display: block;
+        }
+
+        /* DASHBOARD */
+        .dashboard {
+            display: none;
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 18px 32px;
+            border-bottom: 1px solid var(--border);
+            background: var(--surface);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .logo {
+            font-family: 'Space Mono', monospace;
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .logo span {
+            color: var(--text);
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .live-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: var(--green);
+            font-family: 'Space Mono', monospace;
+        }
+
+        .live-dot {
+            width: 7px;
+            height: 7px;
+            background: var(--green);
+            border-radius: 50%;
+            animation: pulse 1.8s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1)
+            }
+
+            50% {
+                opacity: .4;
+                transform: scale(0.8)
+            }
+        }
+
+        .last-updated {
+            font-size: 11px;
+            font-family: 'Space Mono', monospace;
+            color: var(--muted);
+            transition: color 0.3s;
+        }
+
+        .last-updated.flash {
+            color: var(--green);
+        }
+
+        .refresh-btn {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            color: var(--muted);
+            padding: 7px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            cursor: pointer;
+            font-family: 'DM Sans', sans-serif;
+            transition: all 0.2s;
+        }
+
+        .refresh-btn:hover {
+            color: var(--text);
+        }
+
+        .reset-all-btn {
+            background: rgba(231, 76, 60, 0.1);
+            border: 1px solid var(--red);
+            color: var(--red);
+            padding: 7px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            cursor: pointer;
+            font-family: 'DM Sans', sans-serif;
+            transition: all 0.2s;
+            font-weight: 600;
+        }
+
+        .reset-all-btn:hover {
+            background: rgba(231, 76, 60, 0.25);
+        }
+
+        .logout-btn {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--muted);
+            padding: 7px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            cursor: pointer;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        .logout-btn:hover {
+            color: var(--text);
+        }
+
+        main {
+            padding: 28px 32px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* STATS */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+            margin-bottom: 28px;
+        }
+
+        .stat-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 18px 20px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-family: 'Space Mono', monospace;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 600;
+            font-family: 'Space Mono', monospace;
+        }
+
+        .stat-value.accent {
+            color: var(--accent);
+        }
+
+        .stat-value.green {
+            color: var(--green);
+        }
+
+        .stat-value.blue {
+            color: var(--blue);
+        }
+
+        .section-title {
+            font-size: 13px;
+            font-family: 'Space Mono', monospace;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 14px;
+        }
+
+        /* TWO COL */
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1.6fr;
+            gap: 20px;
+            margin-bottom: 28px;
+        }
+
+        /* LEADERBOARD */
+        .leaderboard-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            overflow: hidden;
+        }
+
+        .leaderboard-empty {
+            padding: 40px 20px;
+            text-align: center;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .leaderboard-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 20px;
+            border-bottom: 1px solid var(--border);
+            transition: background 0.15s;
+        }
+
+        .leaderboard-item:last-child {
+            border-bottom: none;
+        }
+
+        .leaderboard-item:hover {
+            background: var(--surface2);
+        }
+
+        .rank-badge {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Space Mono', monospace;
+            font-size: 13px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .rank-1 {
+            background: #3d3200;
+            color: var(--accent);
+        }
+
+        .rank-2 {
+            background: #1e2830;
+            color: #a0c4e8;
+        }
+
+        .rank-3 {
+            background: #2a1f10;
+            color: #c8956a;
+        }
+
+        .rank-n {
+            background: var(--surface2);
+            color: var(--muted);
+        }
+
+        .lb-name {
+            flex: 1;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .lb-time {
+            font-family: 'Space Mono', monospace;
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        /* TEAMS TABLE */
+        .teams-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            overflow: hidden;
+        }
+
+        .teams-table-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .search-input {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-family: 'DM Sans', sans-serif;
+            width: 160px;
+            outline: none;
+        }
+
+        .search-input::placeholder {
+            color: var(--muted);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead th {
+            padding: 10px 16px;
+            text-align: left;
+            font-size: 11px;
+            color: var(--muted);
+            font-family: 'Space Mono', monospace;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            border-bottom: 1px solid var(--border);
+        }
+
+        tbody tr {
+            border-bottom: 1px solid var(--border);
+            transition: background 0.15s;
+        }
+
+        tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        tbody tr:hover {
+            background: var(--surface2);
+        }
+
+        td {
+            padding: 12px 16px;
+            font-size: 13px;
+            vertical-align: middle;
+        }
+
+        /* PROGRESS */
+        .progress-wrap {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .progress-bar {
+            flex: 1;
+            height: 5px;
+            background: var(--surface2);
+            border-radius: 99px;
+            overflow: hidden;
+            min-width: 80px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 99px;
+            transition: width 0.5s ease;
+            background: var(--blue);
+        }
+
+        .progress-fill.done {
+            background: var(--green);
+        }
+
+        .progress-text {
+            font-family: 'Space Mono', monospace;
+            font-size: 11px;
+            color: var(--muted);
+            min-width: 32px;
+            text-align: right;
+        }
+
+        /* BADGES */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 3px 9px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-family: 'Space Mono', monospace;
+            font-weight: 700;
+        }
+
+        .badge-done {
+            background: rgba(46, 204, 113, 0.12);
+            color: var(--green);
+        }
+
+        .badge-active {
+            background: rgba(74, 158, 255, 0.12);
+            color: var(--blue);
+        }
+
+        .badge-waiting {
+            background: rgba(136, 136, 130, 0.1);
+            color: var(--muted);
+        }
+
+        /* RESET BTN */
+        .reset-btn {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--muted);
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            cursor: pointer;
+            font-family: 'Space Mono', monospace;
+            transition: all 0.2s;
+        }
+
+        .reset-btn:hover {
+            border-color: var(--red);
+            color: var(--red);
+            background: rgba(231, 76, 60, 0.08);
+        }
+
+        /* TOAST */
+        .toast {
+            position: fixed;
+            bottom: 28px;
+            right: 28px;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-size: 13px;
+            z-index: 999;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s;
+            pointer-events: none;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .toast.success {
+            border-left: 3px solid var(--green);
+        }
+
+        .toast.error {
+            border-left: 3px solid var(--red);
+        }
+
+        @media(max-width:800px) {
+            .stats-row {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .two-col {
+                grid-template-columns: 1fr;
+            }
+
+            main {
+                padding: 16px;
+            }
+
+            header {
+                padding: 14px 16px;
+            }
+        }
+    </style>
 </head>
+
 <body>
 
-<!-- LOGIN -->
-<div class="login-screen" id="login-screen">
-  <div class="login-box">
-    <div class="login-logo">TECH TREASURE HUNT</div>
-    <div class="login-sub">Admin Access Only</div>
-    <input type="password" id="admin-password" placeholder="Enter admin password"
-      onkeydown="if(event.key==='Enter') doLogin()"/>
-    <button class="login-btn" onclick="doLogin()">Login →</button>
-    <div class="login-error" id="login-error">Wrong password! Try again.</div>
-  </div>
-</div>
-
-<!-- DASHBOARD -->
-<div class="dashboard" id="dashboard">
-  <header>
-    <div class="logo">TECH<span> TREASURE HUNT</span> // ADMIN</div>
-    <div class="header-right">
-      <div class="live-badge"><div class="live-dot"></div>LIVE</div>
-      <div class="last-updated" id="last-updated">Last updated: —</div>
-      <button class="refresh-btn"   onclick="loadData()">↺ Refresh</button>
-      <button class="reset-all-btn" onclick="resetAllTeams()">⚠ Reset All</button>
-      <button class="logout-btn"    onclick="doLogout()">Logout</button>
-    </div>
-  </header>
-
-  <main>
-    <div class="stats-row">
-      <div class="stat-card"><div class="stat-label">Total Teams</div><div class="stat-value accent" id="stat-total">—</div></div>
-      <div class="stat-card"><div class="stat-label">Finished</div><div class="stat-value green" id="stat-finished">—</div></div>
-      <div class="stat-card"><div class="stat-label">In Progress</div><div class="stat-value blue" id="stat-progress">—</div></div>
-      <div class="stat-card"><div class="stat-label">Not Started</div><div class="stat-value" id="stat-waiting">—</div></div>
-    </div>
-
-    <div class="two-col">
-      <div>
-        <div class="section-title">🏆 Leaderboard</div>
-        <div class="leaderboard-card" id="leaderboard-card">
-          <div class="leaderboard-empty">Loading...</div>
+    <!-- LOGIN -->
+    <div class="login-screen" id="login-screen">
+        <div class="login-box">
+            <div class="login-logo">TECH TREASURE HUNT</div>
+            <div class="login-sub">Admin Access Only</div>
+            <input type="password" id="admin-password" placeholder="Enter admin password"
+                onkeydown="if(event.key==='Enter') doLogin()" />
+            <button class="login-btn" onclick="doLogin()">Login →</button>
+            <div class="login-error" id="login-error">Wrong password! Try again.</div>
         </div>
-      </div>
-      <div>
-        <div class="section-title">📡 Live Team Status</div>
-        <div class="teams-card">
-          <div class="teams-table-header">
-            <span>All Teams</span>
-            <input class="search-input" id="search-box" placeholder="Search team..." oninput="filterTable()"/>
-          </div>
-          <table>
-            <thead>
-              <tr>
-                <th>Team</th>
-                <th>Status</th>
-                <th>Progress</th>
-                <th>Level</th>
-                <th>Reset</th>
-              </tr>
-            </thead>
-            <tbody id="teams-body">
-              <tr><td colspan="5" style="padding:30px;text-align:center;color:var(--muted)">Loading...</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
     </div>
-  </main>
-</div>
 
-<div class="toast" id="toast"></div>
+    <!-- DASHBOARD -->
+    <div class="dashboard" id="dashboard">
+        <header>
+            <div class="logo">TECH<span> TREASURE HUNT</span> // ADMIN</div>
+            <div class="header-right">
+                <div class="live-badge">
+                    <div class="live-dot"></div>LIVE
+                </div>
+                <div class="last-updated" id="last-updated">Last updated: —</div>
+                <button class="refresh-btn" onclick="loadData()">↺ Refresh</button>
+                <button class="reset-all-btn" onclick="resetAllTeams()">⚠ Reset All</button>
+                <button class="logout-btn" onclick="doLogout()">Logout</button>
+            </div>
+        </header>
 
-<script>
-const API = 'https://tech-treasure-hunt-2k26.onrender.com/api';
-  let adminPassword = '';
+        <main>
+            <div class="stats-row">
+                <div class="stat-card">
+                    <div class="stat-label">Total Teams</div>
+                    <div class="stat-value accent" id="stat-total">—</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Finished</div>
+                    <div class="stat-value green" id="stat-finished">—</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">In Progress</div>
+                    <div class="stat-value blue" id="stat-progress">—</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Not Started</div>
+                    <div class="stat-value" id="stat-waiting">—</div>
+                </div>
+            </div>
 
-  function doLogin() {
-    const pwd = document.getElementById('admin-password').value;
-    if (!pwd) return;
-    fetch(API + '/admin/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ password: pwd })
-    })
-    .then(r => r.json())
-    .then(data => {
-      if (data.success) {
-        adminPassword = pwd;
-        document.getElementById('login-screen').style.display  = 'none';
-        document.getElementById('dashboard').style.display     = 'block';
-        loadData();
-        setInterval(loadData, 10000);
-      } else {
-        document.getElementById('login-error').classList.add('show');
-      }
-    })
-    .catch(() => {
-      document.getElementById('login-error').textContent = 'Cannot connect to server!';
-      document.getElementById('login-error').classList.add('show');
-    });
-  }
+            <div class="two-col">
+                <div>
+                    <div class="section-title">🏆 Leaderboard</div>
+                    <div class="leaderboard-card" id="leaderboard-card">
+                        <div class="leaderboard-empty">Loading...</div>
+                    </div>
+                </div>
+                <div>
+                    <div class="section-title">📡 Live Team Status</div>
+                    <div class="teams-card">
+                        <div class="teams-table-header">
+                            <span>All Teams</span>
+                            <input class="search-input" id="search-box" placeholder="Search team..."
+                                oninput="filterTable()" />
+                        </div>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Team</th>
+                                    <th>Status</th>
+                                    <th>Progress</th>
+                                    <th>Level</th>
+                                    <th>Reset</th>
+                                </tr>
+                            </thead>
+                            <tbody id="teams-body">
+                                <tr>
+                                    <td colspan="5" style="padding:30px;text-align:center;color:var(--muted)">Loading...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
 
-  function doLogout() {
-    adminPassword = '';
-    document.getElementById('admin-password').value = '';
-    document.getElementById('login-error').classList.remove('show');
-    document.getElementById('dashboard').style.display    = 'none';
-    document.getElementById('login-screen').style.display = 'flex';
-  }
+    <div class="toast" id="toast"></div>
 
-  function authHeaders() {
-    return { 'Content-Type': 'application/json', 'x-admin-password': adminPassword };
-  }
+    <script>
+        const API = 'https://tech-treasure-hunt-2k26.onrender.com/api';
+        let adminPassword = '';
 
-  function showToast(msg, type = 'success') {
-    const t = document.getElementById('toast');
-    t.textContent = msg;
-    t.className = 'toast show ' + type;
-    setTimeout(() => t.className = 'toast', 2800);
-  }
+        function doLogin() {
+            const pwd = document.getElementById('admin-password').value;
+            if (!pwd) return;
+            fetch(API + '/admin/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ password: pwd })
+            })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success) {
+                        adminPassword = pwd;
+                        document.getElementById('login-screen').style.display = 'none';
+                        document.getElementById('dashboard').style.display = 'block';
+                        loadData();
+                        setInterval(loadData, 10000);
+                    } else {
+                        document.getElementById('login-error').classList.add('show');
+                    }
+                })
+                .catch(() => {
+                    document.getElementById('login-error').textContent = 'Cannot connect to server!';
+                    document.getElementById('login-error').classList.add('show');
+                });
+        }
 
-  function formatTime(iso) {
-    if (!iso) return '—';
-    return new Date(iso).toLocaleTimeString('en-IN', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
-  }
+        function doLogout() {
+            adminPassword = '';
+            document.getElementById('admin-password').value = '';
+            document.getElementById('login-error').classList.remove('show');
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('login-screen').style.display = 'flex';
+        }
 
-  async function resetTeam(teamNumber, btn) {
-    if (!confirm('Reset Team ' + teamNumber + '?')) return;
-    btn.disabled = true; btn.textContent = '...';
-    try {
-      const res  = await fetch(API + '/admin/reset/' + teamNumber, { method:'POST', headers: authHeaders() });
-      const data = await res.json();
-      if (data.success) { showToast('Team ' + teamNumber + ' reset!', 'success'); loadData(); }
-      else { showToast(data.error || 'Failed', 'error'); btn.disabled=false; btn.textContent='Reset'; }
-    } catch(e) { showToast('Server error', 'error'); btn.disabled=false; btn.textContent='Reset'; }
-  }
+        function authHeaders() {
+            return { 'Content-Type': 'application/json', 'x-admin-password': adminPassword };
+        }
 
-  async function resetAllTeams() {
-    if (!confirm('Reset ALL teams? This clears everyone\'s progress!')) return;
-    const btn = document.querySelector('.reset-all-btn');
-    btn.disabled = true; btn.textContent = 'Resetting...';
-    try {
-      const res  = await fetch(API + '/admin/resetall', { method:'POST', headers: authHeaders() });
-      const data = await res.json();
-      if (data.success) { showToast('All teams reset!', 'success'); loadData(); }
-      else showToast('Failed', 'error');
-    } catch(e) { showToast('Server error', 'error'); }
-    btn.disabled = false; btn.textContent = '⚠ Reset All';
-  }
+        function showToast(msg, type = 'success') {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.className = 'toast show ' + type;
+            setTimeout(() => t.className = 'toast', 2800);
+        }
 
-  async function loadData() {
-    try {
-      const res   = await fetch(API + '/admin/teams', { headers: authHeaders() });
-      const teams = await res.json();
+        function formatTime(iso) {
+            if (!iso) return '—';
+            return new Date(iso).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        }
 
-      document.getElementById('stat-total').textContent    = teams.length;
-      document.getElementById('stat-finished').textContent = teams.filter(t => t.finished).length;
-      document.getElementById('stat-progress').textContent = teams.filter(t => !t.finished && t.currentStep > 0).length;
-      document.getElementById('stat-waiting').textContent  = teams.filter(t => !t.finished && t.currentStep === 0).length;
+        async function resetTeam(teamNumber, btn) {
+            if (!confirm('Reset Team ' + teamNumber + '?')) return;
+            btn.disabled = true; btn.textContent = '...';
+            try {
+                const res = await fetch(API + '/admin/reset/' + teamNumber, { method: 'POST', headers: authHeaders() });
+                const data = await res.json();
+                if (data.success) { showToast('Team ' + teamNumber + ' reset!', 'success'); loadData(); }
+                else { showToast(data.error || 'Failed', 'error'); btn.disabled = false; btn.textContent = 'Reset'; }
+            } catch (e) { showToast('Server error', 'error'); btn.disabled = false; btn.textContent = 'Reset'; }
+        }
 
-      // Leaderboard
-      const finished  = teams.filter(t => t.finished).sort((a,b) => new Date(a.finishTime) - new Date(b.finishTime));
-      const card      = document.getElementById('leaderboard-card');
-      const rankClass = i => ['rank-badge rank-1','rank-badge rank-2','rank-badge rank-3'][i] || 'rank-badge rank-n';
-      if (finished.length === 0) {
-        card.innerHTML = '<div class="leaderboard-empty">No teams finished yet</div>';
-      } else {
-        card.innerHTML = finished.map((t,i) => `
+        async function resetAllTeams() {
+            if (!confirm('Reset ALL teams? This clears everyone\'s progress!')) return;
+            const btn = document.querySelector('.reset-all-btn');
+            btn.disabled = true; btn.textContent = 'Resetting...';
+            try {
+                const res = await fetch(API + '/admin/resetall', { method: 'POST', headers: authHeaders() });
+                const data = await res.json();
+                if (data.success) { showToast('All teams reset!', 'success'); loadData(); }
+                else showToast('Failed', 'error');
+            } catch (e) { showToast('Server error', 'error'); }
+            btn.disabled = false; btn.textContent = '⚠ Reset All';
+        }
+
+        async function loadData() {
+            try {
+                const res = await fetch(API + '/admin/teams', { headers: authHeaders() });
+                const teams = await res.json();
+
+                document.getElementById('stat-total').textContent = teams.length;
+                document.getElementById('stat-finished').textContent = teams.filter(t => t.finished).length;
+                document.getElementById('stat-progress').textContent = teams.filter(t => !t.finished && t.currentStep > 0).length;
+                document.getElementById('stat-waiting').textContent = teams.filter(t => !t.finished && t.currentStep === 0).length;
+
+                // Leaderboard
+                const finished = teams.filter(t => t.finished).sort((a, b) => new Date(a.finishTime) - new Date(b.finishTime));
+                const card = document.getElementById('leaderboard-card');
+                const rankClass = i => ['rank-badge rank-1', 'rank-badge rank-2', 'rank-badge rank-3'][i] || 'rank-badge rank-n';
+                if (finished.length === 0) {
+                    card.innerHTML = '<div class="leaderboard-empty">No teams finished yet</div>';
+                } else {
+                    card.innerHTML = finished.map((t, i) => `
           <div class="leaderboard-item">
-            <div class="${rankClass(i)}">${i+1}</div>
+            <div class="${rankClass(i)}">${i + 1}</div>
             <div class="lb-name">Team ${t.teamNumber}</div>
             <div class="lb-time">${formatTime(t.finishTime)}</div>
           </div>`).join('');
-      }
+                }
 
-      // Teams table
-      document.getElementById('teams-body').innerHTML = teams.map(t => {
-        const pct   = t.finished ? 100 : Math.round((t.currentStep / t.totalSteps) * 100);
-        const level = t.finished ? 'Finished' : 'Level ' + (t.currentStep + 1);
-        const badge = t.finished
-          ? '<span class="badge badge-done">✓ Done</span>'
-          : t.currentStep > 0
-            ? '<span class="badge badge-active">● Active</span>'
-            : '<span class="badge badge-waiting">○ Waiting</span>';
-        return `<tr data-team="${t.teamNumber}">
+                // Teams table
+                document.getElementById('teams-body').innerHTML = teams.map(t => {
+                    const pct = t.finished ? 100 : Math.round((t.currentStep / t.totalSteps) * 100);
+                    const level = t.finished ? 'Finished' : 'Level ' + (t.currentStep + 1);
+                    const badge = t.finished
+                        ? '<span class="badge badge-done">✓ Done</span>'
+                        : t.currentStep > 0
+                            ? '<span class="badge badge-active">● Active</span>'
+                            : '<span class="badge badge-waiting">○ Waiting</span>';
+                    return `<tr data-team="${t.teamNumber}">
           <td><strong>Team ${t.teamNumber}</strong></td>
           <td>${badge}</td>
           <td>
             <div class="progress-wrap">
               <div class="progress-bar">
-                <div class="progress-fill ${t.finished?'done':''}" style="width:${pct}%"></div>
+                <div class="progress-fill ${t.finished ? 'done' : ''}" style="width:${pct}%"></div>
               </div>
               <span class="progress-text">${pct}%</span>
             </div>
@@ -314,27 +800,44 @@ const API = 'https://tech-treasure-hunt-2k26.onrender.com/api';
           <td style="font-family:'Space Mono',monospace;font-size:12px;color:var(--muted)">${level}</td>
           <td><button class="reset-btn" onclick="resetTeam(${t.teamNumber},this)">Reset</button></td>
         </tr>`;
-      }).join('');
+                }).join('');
 
-      // Flash updated time
-      const el  = document.getElementById('last-updated');
-      const now = new Date().toLocaleTimeString('en-IN', { hour:'2-digit', minute:'2-digit', second:'2-digit' });
-      el.textContent = 'Last updated: ' + now;
-      el.classList.add('flash');
-      setTimeout(() => el.classList.remove('flash'), 1000);
+                // Flash updated time
+                const el = document.getElementById('last-updated');
+                const now = new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                el.textContent = 'Last updated: ' + now;
+                el.classList.add('flash');
+                setTimeout(() => el.classList.remove('flash'), 1000);
 
-    } catch(e) {
-      document.getElementById('teams-body').innerHTML =
-        '<tr><td colspan="5" style="padding:30px;text-align:center;color:var(--red)">Cannot connect to server!</td></tr>';
-    }
-  }
+            } catch (e) {
+                document.getElementById('teams-body').innerHTML =
+                    '<tr><td colspan="5" style="padding:30px;text-align:center;color:var(--red)">Cannot connect to server!</td></tr>';
+            }
+        }
 
-  function filterTable() {
-    const q = document.getElementById('search-box').value.toLowerCase();
-    document.querySelectorAll('#teams-body tr').forEach(row => {
-      row.style.display = (row.getAttribute('data-team') || '').includes(q) || q === '' ? '' : 'none';
-    });
-  }
-</script>
+        function filterTable() {
+            const q = document.getElementById('search-box').value.toLowerCase();
+            document.querySelectorAll('#teams-body tr').forEach(row => {
+                row.style.display = (row.getAttribute('data-team') || '').includes(q) || q === '' ? '' : 'none';
+            });
+        }
+    </script>
+    <!-- Developer Footer -->
+    <div style="background:var(--surface);border-top:1px solid var(--border);padding:12px 20px;text-align:center;">
+        <p style="font-size:12px;color:var(--muted);font-family:'DM Sans',sans-serif;font-weight:600;margin:0;">
+            Developed by <span style="color:var(--accent);font-weight:800;">Shubham Sirsat</span>
+            · TE E&TC, DVVPCOE · Vice President, EESA ·
+            <a href="https://instagram.com/_shubham_sirsat_07" target="_blank"
+                style="color:#FF4E8C;text-decoration:none;font-weight:700;">📸 @_shubham_sirsat_07</a>
+        </p>
+    </div>
+    ```
+
+    Then save both files and run in terminal:
+    ```
+    git add .
+    git commit -m "add developer footer"
+    git push
 </body>
+
 </html>
