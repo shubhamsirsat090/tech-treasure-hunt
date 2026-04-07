@@ -22,20 +22,19 @@ app.get("/", (req, res) => {
 
 async function seedTeams() {
   const Team = require("./models/Team");
-
-  // No "start" — first QR shared on WhatsApp
   const routes = [
-    ["L1", "L2", "L3", "L4", "L5", "L6", "L7", "finish"],
-    ["L3", "L4", "L5", "L6", "L7", "L1", "L2", "finish"],
-    ["L5", "L6", "L7", "L1", "L2", "L3", "L4", "finish"],
-    ["L2", "L3", "L4", "L5", "L6", "L7", "L1", "finish"],
-    ["L4", "L5", "L6", "L7", "L1", "L2", "L3", "finish"],
-    ["L6", "L7", "L1", "L2", "L3", "L4", "L5", "finish"],
+    ["L1","L2","L3","L4","L5","L6","L7","finish"],
+    ["L3","L4","L5","L6","L7","L1","L2","finish"],
+    ["L5","L6","L7","L1","L2","L3","L4","finish"],
+    ["L2","L3","L4","L5","L6","L7","L1","finish"],
+    ["L4","L5","L6","L7","L1","L2","L3","finish"],
+    ["L6","L7","L1","L2","L3","L4","L5","finish"],
   ];
 
-  for (let i = 1; i <= 25; i++) {
-    const exists = await Team.findOne({ teamNumber: i });
-    if (!exists) {
+  const count = await Team.countDocuments();
+  if (count !== 25) {
+    await Team.deleteMany({});
+    for (let i = 1; i <= 25; i++) {
       await Team.create({
         teamNumber: i,
         teamCode: "TT26" + i,
@@ -44,8 +43,10 @@ async function seedTeams() {
         finished: false,
       });
     }
+    console.log("25 teams seeded!");
+  } else {
+    console.log("Teams ready");
   }
-  console.log("Teams ready");
 }
 
 mongoose
