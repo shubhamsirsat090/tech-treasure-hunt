@@ -25,15 +25,15 @@ async function seedTeams() {
 
   // No "start" — first QR shared on WhatsApp
   const routes = [
-    ["L1","L2","L3","L4","L5","L6","L7","finish"],
-    ["L3","L4","L5","L6","L7","L1","L2","finish"],
-    ["L5","L6","L7","L1","L2","L3","L4","finish"],
-    ["L2","L3","L4","L5","L6","L7","L1","finish"],
-    ["L4","L5","L6","L7","L1","L2","L3","finish"],
-    ["L6","L7","L1","L2","L3","L4","L5","finish"],
+    ["L1", "L2", "L3", "L4", "L5", "L6", "L7", "finish"],
+    ["L3", "L4", "L5", "L6", "L7", "L1", "L2", "finish"],
+    ["L5", "L6", "L7", "L1", "L2", "L3", "L4", "finish"],
+    ["L2", "L3", "L4", "L5", "L6", "L7", "L1", "finish"],
+    ["L4", "L5", "L6", "L7", "L1", "L2", "L3", "finish"],
+    ["L6", "L7", "L1", "L2", "L3", "L4", "L5", "finish"],
   ];
 
-  for (let i = 1; i <= 20; i++) {
+  for (let i = 1; i <= 25; i++) {
     const exists = await Team.findOne({ teamNumber: i });
     if (!exists) {
       await Team.create({

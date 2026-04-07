@@ -890,6 +890,8 @@
             const teamNumber = document.getElementById('start-team-number').value.trim();
             const teamCode = document.getElementById('start-team-code').value.trim().toUpperCase();
 
+            console.log('Sending:', teamNumber, teamCode); // debug line
+
             if (!teamNumber || !teamCode) { showError('start-error', 'Please fill in both fields!'); return; }
 
             const btn = document.getElementById('start-btn');
@@ -900,9 +902,10 @@
                 const res = await fetch(`${API}/game/start`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ teamNumber: Number(teamNumber), teamCode })
+                    body: JSON.stringify({ teamNumber: Number(teamNumber), teamCode: teamCode })
                 });
                 const data = await res.json();
+                console.log('Response:', data); // debug line
 
                 if (!data.success) {
                     showError('start-error', data.error || 'Invalid credentials!');
@@ -1076,11 +1079,13 @@
     </script>
     <!-- Developer Footer -->
     <div style="position:fixed;bottom:10px;right:12px;z-index:200;">
-  <p style="font-size:10px;color:rgba(255,255,255,0.2);font-family:'Nunito',sans-serif;font-weight:600;margin:0;text-align:right;line-height:1.6;">
-    Made by Shubham Sirsat  (TE E&TC), DVVPCOE<br/>
-    Vice President, EESA · <a href="https://instagram.com/_shubham_sirsat_07" target="_blank" style="color:rgba(255,255,255,0.25);text-decoration:none;">@_shubham_sirsat_07</a>
-  </p>
-</div>
+        <p
+            style="font-size:10px;color:rgba(255,255,255,0.2);font-family:'Nunito',sans-serif;font-weight:600;margin:0;text-align:right;line-height:1.6;">
+            Made by Shubham Sirsat (TE E&TC), DVVPCOE<br />
+            Vice President, EESA · <a href="https://instagram.com/_shubham_sirsat_07" target="_blank"
+                style="color:rgba(255,255,255,0.25);text-decoration:none;">@_shubham_sirsat_07</a>
+        </p>
+    </div>
 </body>
 
 </html>
