@@ -780,8 +780,8 @@
                 // Teams table
                 document.getElementById('teams-body').innerHTML = teams.map(t => {
                     const pct = t.finished ? 100 : Math.round((t.currentStep / t.totalSteps) * 100);
-                    const locations = ['Canteen', 'Parking', 'Workshop', 'General Store', 'Office', 'Lawn', 'Kabristan', 'Finished'];
-                    const level = t.finished ? '🏆 Finished' : '📍 ' + (locations[t.currentStep] || 'Not Started');
+                    const locations = ['Canteen', 'Parking', 'Workshop', 'General Store', 'Office', 'Lawn', 'Kabristan'];
+                    const level = t.finished ? '🏆 Finished' : t.currentStep === 0 ? '⏳ Not Started' : '📍 ' + (locations[t.currentStep - 1] || 'Not Started');
                     const badge = t.finished
                         ? '<span class="badge badge-done">✓ Done</span>'
                         : t.currentStep > 0
