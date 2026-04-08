@@ -809,6 +809,7 @@
 
         // ── ON PAGE LOAD ──
         window.onload = function () {
+            fetch(`${API}/game/clue/L1`).catch(() => {});
             const params = new URLSearchParams(window.location.search);
             const location = params.get('location');
             const isStart = params.get('start');
@@ -980,7 +981,12 @@
 
                 showScreen('screen-puzzle');
 
-            } catch (e) { showError('login-error', 'Cannot connect to server!'); }
+            } catch (e) { 
+    showError('answer-error', 'Connecting... Please tap Submit again! ⏳');
+    btn.disabled = false; 
+    btn.textContent = 'Submit Answer ✓';
+    return;
+}
 
             btn.disabled = false; btn.textContent = 'Show My Puzzle 🧩';
         }
