@@ -3,13 +3,34 @@ const router = express.Router();
 const Team = require("../models/Team");
 
 const puzzles = {
-  L1: { question: "What has keys but no locks, space but no room, and you can enter but can't go inside?", answer: "keyboard" },
-  L2: { question: "What runs but never walks, has a mouth but never talks, has a head but never weeps?", answer: "river" },
-  L3: { question: "What has a head and tail but no body?", answer: "coin" },
-  L4: { question: "I speak without a mouth and hear without ears. I have no body but come alive with wind. What am I?", answer: "echo" },
-  L5: { question: "What gets wetter the more it dries?", answer: "towel" },
-  L6: { question: "What has one eye but cannot see?", answer: "needle" },
-  L7: { question: "What can you catch but never throw?", answer: "cold" },
+  L1: {
+    question: "What has keys but no locks, space but no room, and you can enter but can't go inside?",
+    answer: "keyboard"
+  },
+  L2: {
+    question: "What runs but never walks, has a mouth but never talks, has a head but never weeps?",
+    answer: "river"
+  },
+  L3: {
+    question: "I am always ahead of you in a race but you can never see me or touch me. I scare some and excite others. What am I?",
+    answer: "future"
+  },
+  L4: {
+    question: "I speak without a mouth and hear without ears. I have no body but come alive with wind. What am I?",
+    answer: "echo"
+  },
+  L5: {
+    question: "I am the one thing you always throw away when you need me and always pick up when you don't. What am I?",
+    answer: "anchor"
+  },
+  L6: {
+    question: "A man builds a house with 4 walls. Every wall faces south. A bear walks past. What color is the bear?",
+    answer: "white"
+  },
+  L7: {
+    question: "What can you catch but never throw?",
+    answer: "cold"
+  },
 };
 
 // Starting hints for each route
