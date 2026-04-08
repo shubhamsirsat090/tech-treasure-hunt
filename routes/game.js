@@ -36,12 +36,13 @@ const puzzles = {
 // Starting hints for each route
 // Each team gets a different first location — this tells them where to go!
 const startingHints = {
-  L1: "Your journey begins where knowledge lives — head to the place where books and wisdom are found!",
-  L2: "Your first clue awaits near flowing water — find the place where things move and flow!",
-  L3: "Start your hunt at the place where money and transactions happen on campus!",
-  L4: "Listen carefully — your first location is where sound echoes the most on campus!",
-  L5: "Feeling hungry? Your first clue is hidden where food and smells fill the air!",
-  L6: "Look sharp! Your first location needs a keen eye — head to the craft or design area!",
+  L1: "Your hunt begins where hunger dies between lectures — the place every student runs to when the clock strikes break time!",
+  L2: "Your hunt begins where metal beasts stand in perfect silence, dreaming of roads they have not yet traveled. They wait in rows, loyal and still!",
+  L3: "Your hunt begins where fire and iron dance together — where raw hands shape raw metal into something the world has never seen!",
+  L4: "Your hunt begins at the tiny kingdom that never sleeps and never says no — standing guard near where the girls live!",
+  L5: "Your hunt begins at the building that holds a thousand futures locked in files and folders — standing quietly between the sleeping metal beasts of those who teach you!",
+  L6: "Your hunt begins at the ground that has heard every secret, every laugh and every dream — hiding silently behind the hall of great words!",
+  L7: "Your hunt begins at the place that has no roof yet shelters hundreds — no kitchen yet feeds the soul. Every student knows exactly where it is at noon!",
 };
 
 // ── START: get starting hint based on team credentials ──
