@@ -780,7 +780,8 @@
                 // Teams table
                 document.getElementById('teams-body').innerHTML = teams.map(t => {
                     const pct = t.finished ? 100 : Math.round((t.currentStep / t.totalSteps) * 100);
-                    const level = t.finished ? 'Finished' : 'Level ' + (t.currentStep + 1);
+                    const locations = ['Canteen', 'Parking', 'Workshop', 'General Store', 'Office', 'Lawn', 'Kabristan', 'Finished'];
+                    const level = t.finished ? '🏆 Finished' : '📍 ' + (locations[t.currentStep] || 'Not Started');
                     const badge = t.finished
                         ? '<span class="badge badge-done">✓ Done</span>'
                         : t.currentStep > 0
@@ -822,13 +823,15 @@
             });
         }
     </script>
-   <!-- Developer Footer -->
+    <!-- Developer Footer -->
     <div style="position:fixed;bottom:10px;right:12px;z-index:200;">
-  <p style="font-size:10px;color:rgba(255,255,255,0.15);font-family:'DM Sans',sans-serif;font-weight:600;margin:0;text-align:right;line-height:1.6;">
-    Made by Shubham Sirsat · TE E&TC, DVVPCOE<br/>
-    Vice President, EESA · <a href="https://instagram.com/_shubham_sirsat_07" target="_blank" style="color:rgba(255,255,255,0.2);text-decoration:none;">@_shubham_sirsat_07</a>
-  </p>
-</div>
+        <p
+            style="font-size:10px;color:rgba(255,255,255,0.15);font-family:'DM Sans',sans-serif;font-weight:600;margin:0;text-align:right;line-height:1.6;">
+            Made by Shubham Sirsat · TE E&TC, DVVPCOE<br />
+            Vice President, EESA · <a href="https://instagram.com/_shubham_sirsat_07" target="_blank"
+                style="color:rgba(255,255,255,0.2);text-decoration:none;">@_shubham_sirsat_07</a>
+        </p>
+    </div>
 
 
 </body>
