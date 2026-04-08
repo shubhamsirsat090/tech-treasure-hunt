@@ -56,6 +56,13 @@ mongoose
     await seedTeams();
     app.listen(5000, () => {
       console.log("Server running on port 5000");
+      
+      // Keep alive ping every 14 minutes
+      setInterval(() => {
+        fetch('https://tech-treasure-hunt-2k26.onrender.com/api/game/clue/L1')
+          .then(() => console.log('Keep alive ping sent!'))
+          .catch(() => console.log('Ping failed'));
+      }, 14 * 60 * 1000);
     });
   })
   .catch((err) => {
