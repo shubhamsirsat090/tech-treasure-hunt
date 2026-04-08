@@ -767,7 +767,7 @@
         <div class="correct-emoji">🎉</div>
         <div class="correct-title">Correct!</div>
         <div class="correct-sub">Here is your hint for the next location</div>
-        <div class="next-loc-tag">📍 Next: <span id="next-loc-name">L2</span></div>
+        <div class="next-loc-tag">📍 Find Your Next Location!</div>
         <div class="next-hint-card">
             <div class="hint-label">🗺️ Hint</div>
             <div class="hint-text" id="next-hint-text">Loading...</div>
@@ -1032,7 +1032,6 @@
                     state.lastScreen = 'screen-hint';
                     saveState();
 
-                    document.getElementById('next-loc-name').textContent = nextLoc;
                     document.getElementById('next-hint-text').textContent = hintText;
 
                     launchConfetti();
