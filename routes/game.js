@@ -1,6 +1,12 @@
 const express = require("express");
 const router = express.Router();
 const Team = require("../models/Team");
+const mongoose = require("mongoose");
+
+async function isGameLocked() {
+  const setting = await mongoose.connection.collection('settings').findOne({ key: 'gameLocked' });
+  return setting ? setting.value : true;
+}
 
 const puzzles = {
   L1: {
@@ -50,6 +56,11 @@ router.post("/start", async (req, res) => {
   try {
     const { teamNumber, teamCode } = req.body;
 
+    const locked = await isGameLocked();
+    if (locked) {
+      return res.status(403).json({ error: "Game not started yet! Please wait for the organizer to start the game." });
+    }
+
     if (!teamNumber || !teamCode) {
       return res.status(400).json({ error: "Please enter team number and code!" });
     }
@@ -88,6 +99,11 @@ router.post("/start", async (req, res) => {
 router.post("/verify", async (req, res) => {
   try {
     const { teamNumber, teamCode, location } = req.body;
+
+    const locked = await isGameLocked();
+    if (locked) {
+      return res.status(403).json({ error: "Game not started yet! Please wait for the organizer to start the game." });
+    }
 
     if (!teamNumber || !teamCode || !location) {
       return res.status(400).json({ error: "All fields are required" });
