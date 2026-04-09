@@ -816,7 +816,7 @@
             const isStart = params.get('start');
 
             // Always load saved state first
-            const saved = sessionStorage.getItem('huntState');
+            const saved = localStorage.getItem('huntState');
             if (saved) {
                 state = JSON.parse(saved);
             }
@@ -867,7 +867,7 @@
         };
 
         function saveState() {
-            sessionStorage.setItem('huntState', JSON.stringify(state));
+            localStorage.setItem('huntState', JSON.stringify(state));
         }
 
         function restoreScreen() {
@@ -1066,7 +1066,7 @@
         // ── PLAY AGAIN ──
         function playAgain() {
             state = { teamNumber: null, teamCode: null, currentLocation: null, lastHint: null, lastNextLoc: null, lastScreen: null };
-            sessionStorage.removeItem('huntState');
+            localStorage.removeItem('huntState');
             document.getElementById('start-team-number').value = '';
             document.getElementById('start-team-code').value = '';
             showScreen('screen-start');
