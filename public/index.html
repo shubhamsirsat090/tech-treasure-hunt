@@ -960,11 +960,18 @@
                 const data = await res.json();
 
                 if (!data.success) {
+                    // Check if they already answered this location and have a saved hint
+                    if (data.error && data.error.includes('Wrong location') && state.lastHint && state.lastScreen === 'screen-hint') {
+                        // Show saved hint again instead of error
+                        document.getElementById('next-hint-text').textContent = state.lastHint;
+                        showScreen('screen-hint');
+                        btn.disabled = false; btn.textContent = 'Show My Puzzle 🧩';
+                        return;
+                    }
                     showError('login-error', data.error || 'Invalid credentials!');
                     btn.disabled = false; btn.textContent = 'Show My Puzzle 🧩';
                     return;
                 }
-
                 state.teamNumber = teamNumber;
                 state.teamCode = teamCode;
                 state.lastScreen = 'screen-puzzle';
