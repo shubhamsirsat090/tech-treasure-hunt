@@ -9,46 +9,23 @@ async function isGameLocked() {
 }
 
 const puzzles = {
-  L1: {
-    question: "What has keys but no locks, space but no room, and you can enter but can't go inside?",
-    answer: "keyboard"
-  },
-  L2: {
-    question: "What runs but never walks, has a mouth but never talks, has a head but never weeps?",
-    answer: "river"
-  },
-  L3: {
-    question: "I am always ahead of you in a race but you can never see me or touch me. I scare some and excite others. What am I?",
-    answer: "future"
-  },
-  L4: {
-    question: "I speak without a mouth and hear without ears. I have no body but come alive with wind. What am I?",
-    answer: "echo"
-  },
-  L5: {
-    question: "I am the one thing you always throw away when you need me and always pick up when you don't. What am I?",
-    answer: "anchor"
-  },
-  L6: {
-    question: "A man builds a house with 4 walls. Every wall faces south. A bear walks past. What color is the bear?",
-    answer: "white"
-  },
-  L7: {
-    question: "What can you catch but never throw?",
-    answer: "cold"
-  },
+  L1: { question: "What is 2 + 2?", answer: "4" },
+  L2: { question: "What color is the sky?", answer: "blue" },
+  L3: { question: "How many days in a week?", answer: "7" },
+  L4: { question: "What is the capital of India?", answer: "delhi" },
+  L5: { question: "How many fingers on one hand?", answer: "5" },
+  L6: { question: "What comes after Monday?", answer: "tuesday" },
+  L7: { question: "How many hours in a day?", answer: "24" },
 };
 
-// Starting hints for each route
-// Each team gets a different first location — this tells them where to go!
 const startingHints = {
-  L1: "Your hunt begins where hunger dies between lectures — the place every student runs to when the clock strikes break time!",
-  L2: "Your hunt begins where metal beasts stand in perfect silence, dreaming of roads they have not yet traveled. They wait in rows, loyal and still!",
-  L3: "Your hunt begins where fire and iron dance together — where raw hands shape raw metal into something the world has never seen!",
-  L4: "Your hunt begins at the tiny kingdom that never sleeps and never says no — standing guard near where the girls live!",
-  L5: "Your hunt begins at the building that holds a thousand futures locked in files and folders — standing quietly between the sleeping metal beasts of those who teach you!",
-  L6: "Your hunt begins at the ground that has heard every secret, every laugh and every dream — hiding silently behind the hall of great words!",
-  L7: "Your hunt begins at the place that has no roof yet shelters hundreds — no kitchen yet feeds the soul. Every student knows exactly where it is at noon!",
+  L1: "TEST HINT — Go to Location 1",
+  L2: "TEST HINT — Go to Location 2",
+  L3: "TEST HINT — Go to Location 3",
+  L4: "TEST HINT — Go to Location 4",
+  L5: "TEST HINT — Go to Location 5",
+  L6: "TEST HINT — Go to Location 6",
+  L7: "TEST HINT — Go to Location 7",
 };
 
 // ── START: get starting hint based on team credentials ──
