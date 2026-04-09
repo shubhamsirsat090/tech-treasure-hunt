@@ -758,7 +758,7 @@
                 <input type="text" id="input-answer" placeholder="Type your answer here..." />
             </div>
             <button class="submit-btn" id="answer-btn" onclick="handleAnswer()">Submit Answer ✓</button>
-            
+
             <div class="error-msg" id="answer-error">Wrong answer! Think harder 🤔</div>
         </div>
     </div>
@@ -840,11 +840,21 @@
                     showScreen('screen-hint');
 
                 } else {
-                    // New location scan — show login
-                    state.currentLocation = scannedLoc;
-                    saveState();
-                    document.getElementById('banner-location').textContent = state.currentLocation;
-                    showScreen('screen-login');
+                    // Check if they have a saved hint for this location
+                    if (state.lastScreen === 'screen-hint' && state.lastHint) {
+                        // Show saved hint again
+                        document.getElementById('next-hint-text').textContent = state.lastHint;
+                        showScreen('screen-hint');
+                    } else if (state.lastScreen === 'screen-puzzle' && state.currentLocation === scannedLoc && state.teamNumber) {
+                        // They were solving this puzzle — restore puzzle screen
+                        showScreen('screen-puzzle');
+                    } else {
+                        // New location scan — show login
+                        state.currentLocation = scannedLoc;
+                        saveState();
+                        document.getElementById('banner-location').textContent = state.currentLocation;
+                        showScreen('screen-login');
+                    }
                 }
 
             } else if (state.lastScreen) {
@@ -1088,7 +1098,7 @@
             if (active.id === 'screen-login') handleLogin();
             if (active.id === 'screen-puzzle') handleAnswer();
         });
-    
+
     </script>
     <!-- Developer Footer -->
     <div style="position:fixed;bottom:10px;right:12px;z-index:200;">
