@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Team = require("../models/Team");
+const mongoose = require("mongoose");
 
 // Admin password — change this to whatever you want!
 const ADMIN_PASSWORD = "123";
@@ -73,7 +74,6 @@ router.post("/reset/:teamNumber", checkAuth, async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 });
-
 // ── RESET ALL TEAMS ──
 router.post("/resetall", checkAuth, async (req, res) => {
   try {
@@ -81,6 +81,44 @@ router.post("/resetall", checkAuth, async (req, res) => {
     res.json({ success: true, message: "All teams reset!" });
   } catch (err) {
     res.status(500).json({ error: "Server error" });
+  }
+});
+
+// ── GAME LOCK ──
+router.post("/lock", checkAuth, async (req, res) => {
+  try {
+    await mongoose.connection.collection('settings').updateOne(
+      { key: 'gameLocked' },
+      { $set: { key: 'gameLocked', value: true } },
+      { upsert: true }
+    );
+    res.json({ success: true, message: 'Game locked!' });
+  } catch (err) {
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// ── GAME UNLOCK ──
+router.post("/unlock", checkAuth, async (req, res) => {
+  try {
+    await mongoose.connection.collection('settings').updateOne(
+      { key: 'gameLocked' },
+      { $set: { key: 'gameLocked', value: false } },
+      { upsert: true }
+    );
+    res.json({ success: true, message: 'Game unlocked!' });
+  } catch (err) {
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// ── GAME STATUS ──
+router.get("/gamestatus", checkAuth, async (req, res) => {
+  try {
+    const setting = await mongoose.connection.collection('settings').findOne({ key: 'gameLocked' });
+    res.json({ locked: setting ? setting.value : true });
+  } catch (err) {
+    res.status(500).json({ error: 'Server error' });
   }
 });
 
