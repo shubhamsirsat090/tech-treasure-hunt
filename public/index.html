@@ -758,7 +758,6 @@
                 <input type="text" id="input-answer" placeholder="Type your answer here..." />
             </div>
             <button class="submit-btn" id="answer-btn" onclick="handleAnswer()">Submit Answer ✓</button>
-
             <div class="error-msg" id="answer-error">Wrong answer! Think harder 🤔</div>
         </div>
     </div>
@@ -768,7 +767,7 @@
         <div class="correct-emoji">🎉</div>
         <div class="correct-title">Correct!</div>
         <div class="correct-sub">Here is your hint for the next location</div>
-        <div class="next-loc-tag">📍 Find Your Next Location!</div>
+        <div class="next-loc-tag">📍 Next: <span id="next-loc-name">L2</span></div>
         <div class="next-hint-card">
             <div class="hint-label">🗺️ Hint</div>
             <div class="hint-text" id="next-hint-text">Loading...</div>
@@ -789,13 +788,13 @@
 
         // ── EDIT THESE HINTS — shown after correct answer at each location ──
         const nextLocationHints = {
-            L1: "Great job! 🎉 Find the place where metal beasts stand in perfect silence, dreaming of roads they have not yet traveled. They wait in rows, loyal and still!",
-            L2: "Nice work! 💪 Find the place where fire and iron dance together, where raw hands shape raw metal into something the world has never seen before!",
-            L3: "Brilliant! 🧠 Find the tiny kingdom that never sleeps and never says no — too small to be noticed, too important to be forgotten. It stands guard near where the girls live!",
-            L4: "Amazing! 🌟 Find the building that holds a thousand futures locked in files and folders — it stands quietly between the sleeping metal beasts of those who teach you!",
-            L5: "So close! 🔥 Find the ground that has heard every secret, every laugh and every dream of every student who ever sat on it — hiding silently behind the hall of great words!",
-            L6: "Almost there! ⚡ Find the place that has no roof yet shelters hundreds, no kitchen yet feeds the soul, no name yet every student knows exactly where it is at noon!",
-            L7: "LAST ONE! 🔥 Find the point named after the dream of every child who ever stared at the night sky and wondered what lies beyond the last star. The treasure is yours! 🏆",
+            L1: "Great job! Your next clue is near where knowledge flows — head to the library or study area!",
+            L2: "Nice! Next stop is where code comes alive — find the computer lab or tech room!",
+            L3: "Brilliant! Head to the heart of campus where everyone gathers between classes!",
+            L4: "Well done! Your next location is where experiments happen — the science lab area!",
+            L5: "Amazing! Go where the food is — the canteen or food court is calling you!",
+            L6: "So close! Head to the tallest point on campus for your next puzzle!",
+            L7: "Last one! Head back to where it all began — the main entrance or starting point!",
         };
 
         let state = {
@@ -810,7 +809,6 @@
 
         // ── ON PAGE LOAD ──
         window.onload = function () {
-            fetch(`${API}/game/clue/L1`).catch(() => { });
             const params = new URLSearchParams(window.location.search);
             const location = params.get('location');
             const isStart = params.get('start');
@@ -840,39 +838,17 @@
                     showScreen('screen-hint');
 
                 } else {
-                    // Check if they have a saved hint for this location
-                    if (state.lastScreen === 'screen-hint' && state.lastHint) {
-                        // Show saved hint again
-                        document.getElementById('next-hint-text').textContent = state.lastHint;
-                        showScreen('screen-hint');
-                    } else if (state.lastScreen === 'screen-puzzle' && state.currentLocation === scannedLoc && state.teamNumber) {
-                        // They were solving this puzzle — restore puzzle screen
-                        showScreen('screen-puzzle');
-                    } else {
-                        // New location scan — show login
-                        state.currentLocation = scannedLoc;
-                        saveState();
-                        document.getElementById('banner-location').textContent = state.currentLocation;
-                        showScreen('screen-login');
-                    }
+                    // New location scan — show login
+                    state.currentLocation = scannedLoc;
+                    saveState();
+                    document.getElementById('banner-location').textContent = state.currentLocation;
+                    showScreen('screen-login');
                 }
 
             } else if (state.lastScreen) {
                 // Plain refresh with no URL params — restore last screen
                 restoreScreen();
 
-            } else if (state.lastScreen === 'screen-puzzle' && state.teamNumber && state.currentLocation) {
-                // Restore puzzle question from saved state
-                document.getElementById('puzzle-team-name').textContent = 'Team ' + state.teamNumber;
-                document.getElementById('puzzle-loc-pill').textContent = state.currentLocation;
-                if (state.savedQuestion) {
-                    document.getElementById('puzzle-question').textContent = state.savedQuestion;
-                    document.getElementById('story-box').style.display = 'none';
-                    document.getElementById('input-answer').value = '';
-                    showScreen('screen-puzzle');
-                } else {
-                    showScreen('screen-start');
-                }
             } else {
                 showScreen('screen-start');
             }
@@ -979,18 +955,11 @@
                 const data = await res.json();
 
                 if (!data.success) {
-                    // Check if they already answered this location and have a saved hint
-                    if (data.error && data.error.includes('Wrong location') && state.lastHint && state.lastScreen === 'screen-hint') {
-                        // Show saved hint again instead of error
-                        document.getElementById('next-hint-text').textContent = state.lastHint;
-                        showScreen('screen-hint');
-                        btn.disabled = false; btn.textContent = 'Show My Puzzle 🧩';
-                        return;
-                    }
                     showError('login-error', data.error || 'Invalid credentials!');
                     btn.disabled = false; btn.textContent = 'Show My Puzzle 🧩';
                     return;
                 }
+
                 state.teamNumber = teamNumber;
                 state.teamCode = teamCode;
                 state.lastScreen = 'screen-puzzle';
@@ -999,9 +968,7 @@
                 document.getElementById('puzzle-team-name').textContent = 'Team ' + teamNumber;
                 document.getElementById('puzzle-loc-pill').textContent = state.currentLocation;
                 document.getElementById('puzzle-question').textContent = data.question;
-                state.savedQuestion = data.question;
                 document.getElementById('input-answer').value = '';
-
                 hideError('answer-error');
 
                 if (data.story) {
@@ -1013,9 +980,7 @@
 
                 showScreen('screen-puzzle');
 
-            } catch (e) {
-                showError('login-error', 'Cannot connect to server!');
-            }
+            } catch (e) { showError('login-error', 'Cannot connect to server!'); }
 
             btn.disabled = false; btn.textContent = 'Show My Puzzle 🧩';
         }
@@ -1064,19 +1029,18 @@
                     state.lastScreen = 'screen-hint';
                     saveState();
 
+                    document.getElementById('next-loc-name').textContent = nextLoc;
                     document.getElementById('next-hint-text').textContent = hintText;
 
                     launchConfetti();
                     setTimeout(() => showScreen('screen-hint'), 300);
                 }
 
-            } catch (e) {
-                showError('answer-error', 'Connection issue! Please wait 10 seconds and tap Submit again ⏳');
-                btn.disabled = false;
-                btn.textContent = 'Submit Answer ✓';
-                return;
-            }
+            } catch (e) { showError('answer-error', 'Cannot connect to server!'); }
+
+            btn.disabled = false; btn.textContent = 'Submit Answer ✓';
         }
+
         // ── PLAY AGAIN ──
         function playAgain() {
             state = { teamNumber: null, teamCode: null, currentLocation: null, lastHint: null, lastNextLoc: null, lastScreen: null };
@@ -1112,14 +1076,13 @@
             if (active.id === 'screen-login') handleLogin();
             if (active.id === 'screen-puzzle') handleAnswer();
         });
-
     </script>
     <!-- Developer Footer -->
     <div style="position:fixed;bottom:10px;right:12px;z-index:200;">
         <p
             style="font-size:10px;color:rgba(255,255,255,0.2);font-family:'Nunito',sans-serif;font-weight:600;margin:0;text-align:right;line-height:1.6;">
-            Made by Shubham Sirsat (E&TC), DVVPCOE<br />
-            <a href="https://instagram.com/_shubham_sirsat_07" target="_blank"
+            Made by Shubham Sirsat (TE E&TC), DVVPCOE<br />
+            Vice President, EESA · <a href="https://instagram.com/_shubham_sirsat_07" target="_blank"
                 style="color:rgba(255,255,255,0.25);text-decoration:none;">@_shubham_sirsat_07</a>
         </p>
     </div>
