@@ -57,10 +57,12 @@ mongoose
   .then(async () => {
     console.log("MongoDB Connected");
     await seedTeams();
-    app.listen(5000, () => {
-      console.log("Server running on port 5000");
+    const server = app.listen(5000, () => {
+  console.log("Server running on port 5000");
+});
 
-    });
+server.keepAliveTimeout = 120000;
+server.headersTimeout = 120000;
   })
   .catch((err) => {
     console.error("MongoDB connection failed:", err.message);
