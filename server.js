@@ -20,18 +20,15 @@ app.get("/", (req, res) => {
   res.send("Tech Treasure Backend Running 🚀");
 });
 
-app.get("/ping", (req, res) => {
-  res.json({ status: "ok", time: new Date() });
-});
 async function seedTeams() {
   const Team = require("./models/Team");
   const routes = [
-    ["L1", "L2", "L3", "L4", "L5", "L6", "L7", "finish"],
-    ["L3", "L4", "L5", "L6", "L7", "L1", "L2", "finish"],
-    ["L5", "L6", "L7", "L1", "L2", "L3", "L4", "finish"],
-    ["L2", "L3", "L4", "L5", "L6", "L7", "L1", "finish"],
-    ["L4", "L5", "L6", "L7", "L1", "L2", "L3", "finish"],
-    ["L6", "L7", "L1", "L2", "L3", "L4", "L5", "finish"],
+    ["L1","L2","L3","L4","L5","L6","L7","finish"],
+    ["L3","L4","L5","L6","L7","L1","L2","finish"],
+    ["L5","L6","L7","L1","L2","L3","L4","finish"],
+    ["L2","L3","L4","L5","L6","L7","L1","finish"],
+    ["L4","L5","L6","L7","L1","L2","L3","finish"],
+    ["L6","L7","L1","L2","L3","L4","L5","finish"],
   ];
 
   const count = await Team.countDocuments();
@@ -57,12 +54,9 @@ mongoose
   .then(async () => {
     console.log("MongoDB Connected");
     await seedTeams();
-    const server = app.listen(5000, () => {
-  console.log("Server running on port 5000");
-});
-
-server.keepAliveTimeout = 120000;
-server.headersTimeout = 120000;
+    app.listen(5000, () => {
+      console.log("Server running on port 5000");
+    });
   })
   .catch((err) => {
     console.error("MongoDB connection failed:", err.message);

@@ -582,25 +582,6 @@
                 padding: 14px 16px;
             }
         }
-
-        .lock-btn {
-            padding: 7px 14px;
-            border-radius: 8px;
-            font-size: 13px;
-            cursor: pointer;
-            font-family: 'DM Sans', sans-serif;
-            font-weight: 700;
-            transition: all 0.2s;
-            border: 1px solid var(--red);
-            background: rgba(231, 76, 60, 0.1);
-            color: var(--red);
-        }
-
-        .lock-btn.unlocked {
-            border-color: var(--green);
-            background: rgba(46, 204, 113, 0.1);
-            color: var(--green);
-        }
     </style>
 </head>
 
@@ -628,7 +609,6 @@
                 </div>
                 <div class="last-updated" id="last-updated">Last updated: —</div>
                 <button class="refresh-btn" onclick="loadData()">↺ Refresh</button>
-                <button class="lock-btn" id="lock-btn" onclick="toggleLock()">🔒 Game Locked</button>
                 <button class="reset-all-btn" onclick="resetAllTeams()">⚠ Reset All</button>
                 <button class="logout-btn" onclick="doLogout()">Logout</button>
             </div>
@@ -713,7 +693,6 @@
                         document.getElementById('login-screen').style.display = 'none';
                         document.getElementById('dashboard').style.display = 'block';
                         loadData();
-                        checkGameStatus();
                         setInterval(loadData, 10000);
                     } else {
                         document.getElementById('login-error').classList.add('show');
@@ -842,36 +821,6 @@
             document.querySelectorAll('#teams-body tr').forEach(row => {
                 row.style.display = (row.getAttribute('data-team') || '').includes(q) || q === '' ? '' : 'none';
             });
-        }
-        async function toggleLock() {
-            const btn = document.getElementById('lock-btn');
-            const isLocked = !btn.classList.contains('unlocked');
-            if (isLocked) {
-                if (!confirm('Unlock game? Players can now access puzzles!')) return;
-            } else {
-                if (!confirm('Lock game? Players will see Game not started message!')) return;
-            }
-            try {
-                const endpoint = isLocked ? '/admin/unlock' : '/admin/lock';
-                const res = await fetch(API + endpoint, { method: 'POST', headers: authHeaders() });
-                const data = await res.json();
-                if (data.success) { showToast(data.message, 'success'); checkGameStatus(); }
-            } catch (e) { showToast('Server error', 'error'); }
-        }
-
-        async function checkGameStatus() {
-            try {
-                const res = await fetch(API + '/admin/gamestatus', { headers: authHeaders() });
-                const data = await res.json();
-                const btn = document.getElementById('lock-btn');
-                if (data.locked) {
-                    btn.textContent = '🔒 Game Locked';
-                    btn.classList.remove('unlocked');
-                } else {
-                    btn.textContent = '🔓 Game Unlocked';
-                    btn.classList.add('unlocked');
-                }
-            } catch (e) { }
         }
     </script>
     <!-- Developer Footer -->
