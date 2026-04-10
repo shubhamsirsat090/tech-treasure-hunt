@@ -861,6 +861,18 @@
                 // Plain refresh with no URL params — restore last screen
                 restoreScreen();
 
+            } else if (state.lastScreen === 'screen-puzzle' && state.teamNumber && state.currentLocation) {
+                // Restore puzzle question from saved state
+                document.getElementById('puzzle-team-name').textContent = 'Team ' + state.teamNumber;
+                document.getElementById('puzzle-loc-pill').textContent = state.currentLocation;
+                if (state.savedQuestion) {
+                    document.getElementById('puzzle-question').textContent = state.savedQuestion;
+                    document.getElementById('story-box').style.display = 'none';
+                    document.getElementById('input-answer').value = '';
+                    showScreen('screen-puzzle');
+                } else {
+                    showScreen('screen-start');
+                }
             } else {
                 showScreen('screen-start');
             }
@@ -987,7 +999,9 @@
                 document.getElementById('puzzle-team-name').textContent = 'Team ' + teamNumber;
                 document.getElementById('puzzle-loc-pill').textContent = state.currentLocation;
                 document.getElementById('puzzle-question').textContent = data.question;
+                state.savedQuestion = data.question;
                 document.getElementById('input-answer').value = '';
+
                 hideError('answer-error');
 
                 if (data.story) {
@@ -1057,7 +1071,7 @@
                 }
 
             } catch (e) {
-                showError('answer-error', 'Server waking up... Wait 30 seconds and try again! ⏳');
+                showError('answer-error', 'Connection issue! Please wait 10 seconds and tap Submit again ⏳');
                 btn.disabled = false;
                 btn.textContent = 'Submit Answer ✓';
                 return;
